@@ -26,12 +26,12 @@ public class Dot : MonoBehaviour
     void Start()
     {
         board = FindObjectOfType<Board>();
-        targetX = (int)transform.position.x;
-        targetY = (int)transform.position.y;
-        linha = targetY;
-        coluna = targetX;
-        linhaAnt = linha;
-        colunaAnt = coluna;
+        //targetX = (int)transform.position.x;
+        //targetY = (int)transform.position.y;
+        //linha = targetY;
+        //coluna = targetX;
+        //linhaAnt = linha;
+        //colunaAnt = coluna;
     }
 
     // Update is called once per frame
@@ -95,6 +95,9 @@ public class Dot : MonoBehaviour
                 otherDot.GetComponent<Dot>().coluna = coluna;
                 linha = linhaAnt;
                 coluna = colunaAnt;
+
+                yield return new WaitForSeconds(.5f);
+                board.currentState = GameState.move;
             }
             else
             {
@@ -107,14 +110,20 @@ public class Dot : MonoBehaviour
     // Metodo que detecta quando o botao mouse1 foi pressionado.
     private void OnMouseDown()
     {
-        firstTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (board.currentState == GameState.move)
+        {
+            firstTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
     }
 
     // Metodo que detecta quando o botao mouse1 foi solto.
     private void OnMouseUp()
     {
-        finalTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        CalculateAngle();
+        if (board.currentState == GameState.move)
+        {
+            finalTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            CalculateAngle();
+        }
     }
 
     // Metodo que calcula o angulo para mover a peca na direcao certa conforme o mouse do jogador.
@@ -124,6 +133,11 @@ public class Dot : MonoBehaviour
         {
             swipeAngle = Mathf.Atan2(finalTouchPos.y - firstTouchPos.y, finalTouchPos.x - firstTouchPos.x) * 180 / Mathf.PI;
             MoveDots();
+            board.currentState = GameState.wait;
+        }
+        else
+        {
+            board.currentState = GameState.move;
         }
     }
 
@@ -135,6 +149,8 @@ public class Dot : MonoBehaviour
         {
             //Right Swipe
             otherDot = board.allDots[coluna + 1, linha];
+            linhaAnt = linha;
+            colunaAnt = coluna;
             otherDot.GetComponent<Dot>().coluna -= 1;
             coluna += 1;
         }
@@ -142,6 +158,8 @@ public class Dot : MonoBehaviour
         {
             //Up Swipe
             otherDot = board.allDots[coluna, linha + 1];
+            linhaAnt = linha;
+            colunaAnt = coluna;
             otherDot.GetComponent<Dot>().linha -= 1;
             linha += 1;
         }
@@ -149,6 +167,8 @@ public class Dot : MonoBehaviour
         {
             //Left Swipe
             otherDot = board.allDots[coluna - 1, linha];
+            linhaAnt = linha;
+            colunaAnt = coluna;
             otherDot.GetComponent<Dot>().coluna += 1;
             coluna -= 1;
         }
@@ -156,6 +176,8 @@ public class Dot : MonoBehaviour
         {
             //Down Swipe
             otherDot = board.allDots[coluna, linha - 1];
+            linhaAnt = linha;
+            colunaAnt = coluna;
             otherDot.GetComponent<Dot>().linha += 1;
             linha -= 1;
         }
