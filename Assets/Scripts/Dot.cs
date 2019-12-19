@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Dot : MonoBehaviour
 {
+    // Variaveis do Tabuleiro
     [Header("Board Variables")]
     public int coluna;
     public int linha;
@@ -48,33 +49,41 @@ public class Dot : MonoBehaviour
         targetY = linha;
         if(Mathf.Abs(targetX - transform.position.x) > .1)
         {
-            //Move Towards the Target
+            // Move o target pra direcao escolhida
             tempPos = new Vector2(targetX, transform.position.y);
-            transform.position = Vector2.Lerp(transform.position, tempPos, .4f);
+            transform.position = Vector2.Lerp(transform.position, tempPos, .6f);
+            if (board.allDots[coluna, linha] != this.gameObject)
+            {
+                board.allDots[coluna, linha] = this.gameObject;
+            }
         }
         else
         {
-            //Directly Set the Pos
+            // Define a posicao diretamente
             tempPos = new Vector2(targetX, transform.position.y);
             transform.position = tempPos;
-            board.allDots[coluna, linha] = this.gameObject;
         }
 
         if (Mathf.Abs(targetY - transform.position.y) > .1)
         {
-            //Move Towards the Target
+            // Move o target pra direcao escolhida
             tempPos = new Vector2(transform.position.x, targetY);
-            transform.position = Vector2.Lerp(transform.position, tempPos, .4f);
+            transform.position = Vector2.Lerp(transform.position, tempPos, .6f);
+            if (board.allDots[coluna, linha] != this.gameObject)
+            {
+                board.allDots[coluna, linha] = this.gameObject;
+            }
         }
         else
         {
-            //Directly Set the Pos
+            // Define a posicao diretamente
             tempPos = new Vector2(transform.position.x, targetY);
             transform.position = tempPos;
-            board.allDots[coluna, linha] = this.gameObject;
         }
     }
 
+    // Coroutine que checa o movimento entre 2 pecas diferentes, retornando a posicao inicial caso nao tenha "matches" depois do movimento;
+    //Caso tenha "matches" chama um metodo para destruir os novos matches.
     public IEnumerator CheckMoveCo()
     {
         yield return new WaitForSeconds(.5f);
@@ -87,21 +96,28 @@ public class Dot : MonoBehaviour
                 linha = linhaAnt;
                 coluna = colunaAnt;
             }
+            else
+            {
+                board.DestroyMatches();
+            }
             otherDot = null;
         }
     }
 
+    // Metodo que detecta quando o botao mouse1 foi pressionado.
     private void OnMouseDown()
     {
         firstTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
+    // Metodo que detecta quando o botao mouse1 foi solto.
     private void OnMouseUp()
     {
         finalTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         CalculateAngle();
     }
 
+    // Metodo que calcula o angulo para mover a peca na direcao certa conforme o mouse do jogador.
     void CalculateAngle()
     {
         if (Mathf.Abs(finalTouchPos.y - firstTouchPos.y) > swipeResist || Mathf.Abs(finalTouchPos.x - firstTouchPos.x) > swipeResist)
@@ -111,6 +127,8 @@ public class Dot : MonoBehaviour
         }
     }
 
+    // Metodo que move as pecas conforme o angulo calculado. Assim defininco o lado que ira mover;
+    // Depois inicia uma Coroutine para verificar o novo movimento e retornar a posicao caso nao tenha "matches".
     void MoveDots()
     {
         if(swipeAngle > -45 && swipeAngle <= 45 && coluna < board.largura - 1)
@@ -144,6 +162,7 @@ public class Dot : MonoBehaviour
         StartCoroutine(CheckMoveCo());
     }
 
+    // Metodo usado para verificar se ha matches envolvendo essa peca e as adjacentes.
     void FindMatches()
     {
         if (coluna > 0 && coluna < board.largura - 1)
