@@ -14,6 +14,11 @@ public class FindMatches : MonoBehaviour
         board = FindObjectOfType<Board>();
     }
 
+    public void FindAllMatches()
+    {
+        StartCoroutine(FindAllMatchesCo());
+    }
+
     private IEnumerator FindAllMatchesCo()
     {
         yield return new WaitForSeconds(.2f);
@@ -34,15 +39,23 @@ public class FindMatches : MonoBehaviour
                         {
                             if (leftDot.tag == currentDot.tag && rightDot.tag == currentDot.tag)
                             {
+                                if (!currentMatches.Contains(leftDot))
+                                    currentMatches.Add(leftDot);
                                 leftDot.GetComponent<Dot>().isMatched = true;
+
+                                if (!currentMatches.Contains(rightDot))
+                                    currentMatches.Add(rightDot);
                                 rightDot.GetComponent<Dot>().isMatched = true;
+
+                                if (!currentMatches.Contains(currentDot))
+                                    currentMatches.Add(currentDot);
                                 currentDot.GetComponent<Dot>().isMatched = true;
                             }
                         }
                     }
 
                     // Vertical Match
-                    if (j > 0 && i < board.altura - 1)
+                    if (j > 0 && j < board.altura - 1)
                     {
                         GameObject upDot = board.allDots[i, j + 1];
                         GameObject downDot = board.allDots[i, j - 1];
@@ -50,8 +63,17 @@ public class FindMatches : MonoBehaviour
                         {
                             if (upDot.tag == currentDot.tag && downDot.tag == currentDot.tag)
                             {
+
+                                if (!currentMatches.Contains(upDot))
+                                    currentMatches.Add(upDot);
                                 upDot.GetComponent<Dot>().isMatched = true;
+
+                                if (!currentMatches.Contains(downDot))
+                                    currentMatches.Add(downDot);
                                 downDot.GetComponent<Dot>().isMatched = true;
+
+                                if (!currentMatches.Contains(currentDot))
+                                    currentMatches.Add(currentDot);
                                 currentDot.GetComponent<Dot>().isMatched = true;
                             }
                         }

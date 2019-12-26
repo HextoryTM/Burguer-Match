@@ -7,6 +7,8 @@ TagManager:
   - dot_Green
   - dot_Red
   - dot_Yellow
+  - dot_Blue
+  - dot_Pink
   layers:
   - Default
   - TransparentFX

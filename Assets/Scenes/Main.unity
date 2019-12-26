@@ -305,9 +305,13 @@ MonoBehaviour:
   tilePrefab: {fileID: 5100268306014232808, guid: 6b4f54f2abd48ee4aacfcf545b1e074c,
     type: 3}
   dots:
+  - {fileID: 8288606283445777456, guid: 09a87c7646e9f03498e0b7cf7a397fb6, type: 3}
   - {fileID: 8288606283445777456, guid: 8574c75623367e5409d4d0297082ee9f, type: 3}
+  - {fileID: 8288606283445777456, guid: 668fb7ac0e2e2bd4b87b4e78d095c2fd, type: 3}
   - {fileID: 406641189063241689, guid: f0b872be376425949990040862677dd8, type: 3}
   - {fileID: 7198662848531705663, guid: eaf11760e90f68e4ab45947d0988fefb, type: 3}
+  destroyEffect: {fileID: 7459065125610761808, guid: cc83e8b7151078949be19a0c948910e4,
+    type: 3}
 --- !u!4 &848286181
 Transform:
   m_ObjectHideFlags: 0
@@ -331,6 +335,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1690552266}
+  - component: {fileID: 1690552267}
   m_Layer: 0
   m_Name: Match Finder
   m_TagString: Untagged
@@ -352,6 +357,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1690552267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690552265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4811b818538de914ba794067d6d749c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentMatches: []
 --- !u!1 &1971888203
 GameObject:
   m_ObjectHideFlags: 0

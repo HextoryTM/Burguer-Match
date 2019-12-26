@@ -14,13 +14,16 @@ public class Board : MonoBehaviour
     public GameObject tilePrefab;
     public GameObject[] dots;
     public GameObject[,] allDots;
+    public GameObject destroyEffect;
 
     private BackgroundTile[,] allTiles;
+    private FindMatches findMatches;
     
 
     // Start is called before the first frame update
     void Start()
     {
+        findMatches = FindObjectOfType<FindMatches>();
         allTiles = new BackgroundTile[largura, altura];
         allDots = new GameObject[largura, altura];
         SetUp();
@@ -100,6 +103,9 @@ public class Board : MonoBehaviour
     {
         if (allDots[coluna, linha].GetComponent<Dot>().isMatched)
         {
+            findMatches.currentMatches.Remove(allDots[coluna, linha]);
+            GameObject particle = Instantiate(destroyEffect, allDots[coluna, linha].transform.position, Quaternion.identity);
+            Destroy(particle, .6f);
             Destroy(allDots[coluna, linha]);
             allDots[coluna, linha] = null;
         }
