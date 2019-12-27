@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class FindMatches : MonoBehaviour
 {
@@ -39,6 +40,27 @@ public class FindMatches : MonoBehaviour
                         {
                             if (leftDot.tag == currentDot.tag && rightDot.tag == currentDot.tag)
                             {
+                                if (currentDot.GetComponent<Dot>().isLinhaBomb || leftDot.GetComponent<Dot>().isLinhaBomb || rightDot.GetComponent<Dot>().isLinhaBomb)
+                                {
+                                    currentMatches.Union(GetLinhaDots(j));
+                                }
+
+                                if (currentDot.GetComponent<Dot>().isColunaBomb)
+                                {
+                                    currentMatches.Union(GetColunaDots(i));
+                                }
+
+                                if (leftDot.GetComponent<Dot>().isColunaBomb)
+                                {
+                                    currentMatches.Union(GetColunaDots(i - 1));
+                                }
+
+                                if (rightDot.GetComponent<Dot>().isColunaBomb)
+                                {
+                                    currentMatches.Union(GetColunaDots(i + 1));
+                                }
+
+
                                 if (!currentMatches.Contains(leftDot))
                                     currentMatches.Add(leftDot);
                                 leftDot.GetComponent<Dot>().isMatched = true;
@@ -63,6 +85,26 @@ public class FindMatches : MonoBehaviour
                         {
                             if (upDot.tag == currentDot.tag && downDot.tag == currentDot.tag)
                             {
+                                if (currentDot.GetComponent<Dot>().isColunaBomb || upDot.GetComponent<Dot>().isColunaBomb || downDot.GetComponent<Dot>().isColunaBomb)
+                                {
+                                    currentMatches.Union(GetColunaDots(i));
+                                }
+
+                                if (currentDot.GetComponent<Dot>().isLinhaBomb)
+                                {
+                                    currentMatches.Union(GetLinhaDots(j));
+                                }
+
+                                if (upDot.GetComponent<Dot>().isLinhaBomb)
+                                {
+                                    currentMatches.Union(GetLinhaDots(j + 1));
+                                }
+
+                                if (downDot.GetComponent<Dot>().isLinhaBomb)
+                                {
+                                    currentMatches.Union(GetLinhaDots(j - 1));
+                                }
+
 
                                 if (!currentMatches.Contains(upDot))
                                     currentMatches.Add(upDot);
@@ -78,6 +120,102 @@ public class FindMatches : MonoBehaviour
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    List<GameObject> GetColunaDots(int coluna)
+    {
+        List<GameObject> dots = new List<GameObject>();
+
+        for(int i = 0; i < board.altura; i++)
+        {
+            if(board.allDots[coluna, i] != null)
+            {
+                dots.Add(board.allDots[coluna, i]);
+                board.allDots[coluna, i].GetComponent<Dot>().isMatched = true;
+            }
+        }
+
+        return dots;
+    }
+
+    List<GameObject> GetLinhaDots(int linha)
+    {
+        List<GameObject> dots = new List<GameObject>();
+
+        for (int i = 0; i < board.largura; i++)
+        {
+            if (board.allDots[i, linha] != null)
+            {
+                dots.Add(board.allDots[i, linha]);
+                board.allDots[i, linha].GetComponent<Dot>().isMatched = true;
+            }
+        }
+
+        return dots;
+    }
+
+    public void CheckBombs()
+    {
+        //Se o jogador mover algo
+        if(board.currentDot != null)
+        {
+            //Se for a peca que foi mexida
+            if (board.currentDot.isMatched)
+            {
+                //Unmatch
+                board.currentDot.isMatched = false;
+
+                //Decide qual bomba criar
+                /*
+                int typeOfBomb = Random.Range(0, 100);
+                if (typeOfBomb < 50)
+                {
+                    //Bomba de linha
+                    board.currentDot.MakeLinhaBomb();
+                } else if (typeOfBomb >= 50)
+                {
+                    //Bomba de coluna
+                    board.currentDot.MakeColunaBomb();
+                }
+                */
+
+                if((board.currentDot.swipeAngle > -45 && board.currentDot.swipeAngle <= 45) || (board.currentDot.swipeAngle < -135 || board.currentDot.swipeAngle >= 135))
+                    board.currentDot.MakeLinhaBomb();
+                else
+                    board.currentDot.MakeColunaBomb();
+            }
+            //Se a outra peca estiver "Matched"
+            else if (board.currentDot.otherDot != null)
+            {
+                Dot otherDot = board.currentDot.otherDot.GetComponent<Dot>();
+                //Se o outro dot for Matched
+                if (otherDot.isMatched)
+                {
+                    //Unmatch
+                    otherDot.isMatched = false;
+
+                    //Decide qual bomba criar
+                    /*
+                    int typeOfBomb = Random.Range(0, 100);
+                    if (typeOfBomb < 50)
+                    {
+                        //Bomba de linha
+                        otherDot.MakeLinhaBomb();
+                    }
+                    else if (typeOfBomb >= 50)
+                    {
+                        //Bomba de coluna
+                        otherDot.MakeColunaBomb();
+                    }
+                    */
+
+                    if ((board.currentDot.swipeAngle > -45 && board.currentDot.swipeAngle <= 45) || (board.currentDot.swipeAngle < -135 || board.currentDot.swipeAngle >= 135))
+                        otherDot.MakeLinhaBomb();
+                    else
+                        otherDot.MakeColunaBomb();
                 }
             }
         }

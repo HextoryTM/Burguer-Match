@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -5172569757186367633}
   - component: {fileID: -3369819396345847037}
   m_Layer: 0
-  m_Name: dot_LollipopGreen
+  m_Name: dot_Green
   m_TagString: dot_Green
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,3 +119,9 @@ MonoBehaviour:
   isMatched: 0
   swipeAngle: 0
   swipeResist: 1
+  isColunaBomb: 0
+  isLinhaBomb: 0
+  linhaArrow: {fileID: 2835827043737154276, guid: 572d4bc93dbea61488cde301617d0f8e,
+    type: 3}
+  colunaArrow: {fileID: 3584056421890994165, guid: eb7b6684c7474b44880ef555de5a14fa,
+    type: 3}

@@ -13,39 +13,65 @@ public class Dot : MonoBehaviour
     public int targetX;
     public int targetY;
     public bool isMatched = false;
+    public GameObject otherDot;
 
     private FindMatches findMatches;
     private Board board;
-    private GameObject otherDot;
     private Vector2 firstTouchPos;
     private Vector2 finalTouchPos;
     private Vector2 tempPos;
+
+    [Header("Swipe Stuff")]
     public float swipeAngle = 0f;
     public float swipeResist = 1f;
+
+    [Header("Powerup Stuff")]
+    public bool isColunaBomb;
+    public bool isLinhaBomb;
+    public GameObject linhaArrow;
+    public GameObject colunaArrow;
 
     // Start is called before the first frame update
     void Start()
     {
+        isColunaBomb = false;
+        isLinhaBomb = false;
+
         board = FindObjectOfType<Board>();
         findMatches = FindObjectOfType<FindMatches>();
-        //targetX = (int)transform.position.x;
-        //targetY = (int)transform.position.y;
-        //linha = targetY;
-        //coluna = targetX;
-        //linhaAnt = linha;
-        //colunaAnt = coluna;
+    }
+
+    //Apenas para teste e Debug;
+    private void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            isColunaBomb = true;
+            GameObject arrow = Instantiate(colunaArrow, transform.position, Quaternion.identity);
+            arrow.transform.parent = this.transform;
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            isLinhaBomb = true;
+            GameObject arrow = Instantiate(linhaArrow, transform.position, Quaternion.identity);
+            arrow.transform.parent = this.transform;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        //FindMatches();
+        //if (isLinhaBomb || isColunaBomb)
+        //    gameObject.tag = "Untagged";
 
+        /*
         if (isMatched)
         {
             SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
             mySprite.color = new Color(1f, 1f, 1f, .2f);
         }
+        */
 
         targetX = coluna;
         targetY = linha;
@@ -101,13 +127,14 @@ public class Dot : MonoBehaviour
                 coluna = colunaAnt;
 
                 yield return new WaitForSeconds(.5f);
+                board.currentDot = null;
                 board.currentState = GameState.move;
             }
             else
             {
                 board.DestroyMatches();
             }
-            otherDot = null;
+            //otherDot = null;
         }
     }
 
@@ -138,6 +165,7 @@ public class Dot : MonoBehaviour
             swipeAngle = Mathf.Atan2(finalTouchPos.y - firstTouchPos.y, finalTouchPos.x - firstTouchPos.x) * 180 / Mathf.PI;
             MoveDots();
             board.currentState = GameState.wait;
+            board.currentDot = this;
         }
         else
         {
@@ -220,5 +248,19 @@ public class Dot : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void MakeColunaBomb()
+    {
+        isColunaBomb = true;
+        GameObject arrow = Instantiate(colunaArrow, transform.position, Quaternion.identity);
+        arrow.transform.parent = this.transform;
+    }
+
+    public void MakeLinhaBomb()
+    {
+        isLinhaBomb = true;
+        GameObject arrow = Instantiate(linhaArrow, transform.position, Quaternion.identity);
+        arrow.transform.parent = this.transform;
     }
 }
